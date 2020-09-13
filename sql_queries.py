@@ -10,9 +10,9 @@ staging_events_table_drop = "DROP TABLE IF EXISTS staging_events;"
 staging_songs_table_drop  = "DROP TABLE IF EXISTS staging_songs;"
 songplay_table_drop       = "DROP TABLE IF EXISTS songplay;"
 user_table_drop           = "DROP TABLE IF EXISTS users;"
-#song_table_drop = "DROP TABLE IF EXISTS song;"
-#artist_table_drop = "DROP TABLE IF EXISTS artist;"
-#time_table_drop = "DROP TABLE IF EXISTS time;"
+song_table_drop           = "DROP TABLE IF EXISTS song;"
+artist_table_drop         = "DROP TABLE IF EXISTS artist;"
+time_table_drop           = "DROP TABLE IF EXISTS time;"
 
 # CREATE TABLES
 
@@ -83,12 +83,39 @@ user_table_create = ("""
 """)
 
 song_table_create = ("""
+    CREATE TABLE song(
+    song_id    VARCHAR NOT NULL SORTKEY PRIMARY KEY,
+    title      VARCHAR,
+    artist_id  VARCHAR,
+    year       INTEGER,
+    duration   FLOAT
+    )
 """)
 
+
+
 artist_table_create = ("""
+    CREATE TABLE artist(
+    artist_id VARCHAR NOT NULL SORTKEY PRIMARY KEY,
+    name      VARCHAR NOT NULL,
+    location  VARCHAR,
+    latitude FLOAT,
+    longitude FLOAT
+    )
 """)
 
 time_table_create = ("""
+    CREATE TABLE time 
+    (
+    start_time TIMESTAMP NOT NULL DISTKEY SORTKEY PRIMARY KEY,
+    hour       INTEGER,
+    day        INTEGER, 
+    week       INTEGER,
+    month      INTEGER,
+    year       INTEGER,
+    weekday    VARCHAR
+    )
+    
 """)
 
 # STAGING TABLES
@@ -129,7 +156,7 @@ songplay_table_insert = ("""
 """)
     
 user_table_insert = ("""
-    INSERT INTO users (user_id, first_name, last_name, gender, level)
+    INSERT INTO users (user_id,first_name,last_name,gender,level)
     SELECT  
     distinct(userId) AS user_id,
     firstName as first_name,
@@ -141,22 +168,47 @@ user_table_insert = ("""
 """)
 
 song_table_insert = ("""
+    INSERT INTO song (song_id,title,artist_id,year,duration)
+    SELECT 
+    distinct(song_id) as song_id,
+    title as title, 
+    artist_id as artist_id,
+    year as year,
+    duration as duration
+    from staging_songs
+    where song_id is NOT NULL
 """)
 
 artist_table_insert = ("""
+    INSERT INTO artist (artist_id,name,location,latitude,longitude)
+    SELECT 
+    distinct(artist_id) as artist_id,
+    artist_name as name,
+    artist_location as location,
+    artist_latitude as latitude,
+    artist_longitude as longitude
+    FROM staging_songs
+    WHERE artist_id IS NOT NULL;
 """)
 
 time_table_insert = ("""
+    INSERT INTO time (start_time, hour, day, week, month, year, weekday)
+    SELECT  
+    distinct(start_time) as start_time,
+    EXTRACT(hour FROM start_time) as hour,
+    EXTRACT(day FROM start_time) as day,
+    EXTRACT(week FROM start_time) as week,
+    EXTRACT(month FROM start_time) as month,
+    EXTRACT(year FROM start_time) as year,
+    EXTRACT(dayofweek FROM start_time) as weekday
+    FROM songplay;
 """)
+
+
 
 # QUERY LISTS
 
-create_table_queries = [staging_events_table_create, staging_songs_table_create,songplay_table_create,user_table_create]
-drop_table_queries = [staging_events_table_drop, staging_songs_table_drop, songplay_table_drop,user_table_drop]
+create_table_queries = [staging_events_table_create, staging_songs_table_create,songplay_table_create,user_table_create,song_table_create,artist_table_create,time_table_create]
+drop_table_queries = [staging_events_table_drop, staging_songs_table_drop, songplay_table_drop,user_table_drop,song_table_drop,artist_table_drop, time_table_drop]
 copy_table_queries = [staging_events_copy, staging_songs_copy]
-insert_table_queries = [songplay_table_insert,user_table_insert]
-
-#create_table_queries = [staging_events_table_create, staging_songs_table_create, songplay_table_create, user_table_create, song_table_create, artist_table_create, time_table_create]
-#drop_table_queries = [staging_events_table_drop, staging_songs_table_drop, songplay_table_drop, user_table_drop, song_table_drop, artist_table_drop, time_table_drop]
-#copy_table_queries = [staging_events_copy, staging_songs_copy]
-#insert_table_queries = [songplay_table_insert, user_table_insert, song_table_insert, artist_table_insert, time_table_insert]
+insert_table_queries = [songplay_table_insert,user_table_insert,song_table_insert,artist_table_insert,time_table_insert]
