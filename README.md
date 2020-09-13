@@ -273,9 +273,10 @@ ___
 
 #### `FACT TABLE`
     
-| Tablename | Description | Fields |
-| ------ | ------- | --------- |
-| songplays | records in event data associated with song plays i.e. records with page NextSong | <ul><li>songplay_id</li><li>start_time</li><li>user_id</li><li>level</li><li>song_id</li><li>artist_id</li><li>session_id</li><li>location</li><li>user_agent</li></ul>|
+| Tablename | Description | Fields | SPECIAL NOTE |
+| ------ | ------- | --------- |  --------- |
+| songplays | records in event data associated with song plays i.e. records with page NextSong | <ul><li>songplay_id</li><li>start_time</li><li>user_id</li><li>level</li><li>song_id</li><li>artist_id</li><li>session_id</li><li>location</li><li>user_agent</li></ul>| <ul><li>Choosing start_time as the SORTKEY Criteria : If recent data is queried most frequently, specify the timestamp column as the leading column. </li> <li> Choosing start_time as the DISTKEY : For distribution across nodes in parallel </li> </ul>
+  |
 
 #### `DIMENSION TABLES`
 
