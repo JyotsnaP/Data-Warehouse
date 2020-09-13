@@ -1,7 +1,7 @@
 import configparser
 import psycopg2
 from sql_queries import copy_table_queries
-#from sql_queries import insert_table_queries
+from sql_queries import insert_table_queries
 
 
 
@@ -25,7 +25,7 @@ def main():
     cur = conn.cursor()
     
     load_staging_tables(cur, conn)
-    #insert_tables(cur, conn)
+    insert_tables(cur, conn)
 
     conn.close()
 

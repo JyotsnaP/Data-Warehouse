@@ -286,5 +286,3 @@ ___
 | artists | artists in music database | <ul> <li>artist_id</li><li>name</li><li>location</li><li>lattitude</li><li>longitude </ul>|
 |time | timestamps of records in songplays broken down into specific units |  <ul> <li>start_time</li><li>hour</li><li>day</li><li>week</li><li>month</li><li>year</li><li>weekday </ul> |
 
-
-

@@ -19,43 +19,54 @@ time_table_drop = "DROP TABLE IF EXISTS time;"
 staging_events_table_create= ("""
     CREATE TABLE staging_events
     (
-        artist              VARCHAR,
-        auth                VARCHAR,
-        firstName           VARCHAR,
-        gender              VARCHAR,
-        itemInSession       INTEGER,
-        lastName            VARCHAR,
-        length              FLOAT,
-        level               VARCHAR,
-        location            VARCHAR,
-        method              VARCHAR,
-        page                VARCHAR,
-        registration        FLOAT,
-        sessionId           INTEGER,
-        song                VARCHAR,
-        status              INTEGER,
-        ts                  TIMESTAMP,
-        userAgent           VARCHAR,
-        userId              VARCHAR
+        artist          VARCHAR,
+        auth            VARCHAR,
+        firstName       VARCHAR,
+        gender          VARCHAR,
+        itemInSession   INTEGER,
+        lastName        VARCHAR,
+        length          FLOAT,
+        level           VARCHAR,
+        location        VARCHAR,
+        method          VARCHAR,
+        page            VARCHAR,
+        registration    FLOAT,
+        sessionId       INTEGER,
+        song            VARCHAR,
+        status          INTEGER,
+        ts              TIMESTAMP,
+        userAgent       VARCHAR,
+        userId          VARCHAR
     )
 """)
 
 staging_songs_table_create = ("""
  CREATE TABLE staging_songs(
-     artist_id           VARCHAR,
-     artist_latitude     FLOAT,
-     artist_location     VARCHAR,
-     artist_longitude    FLOAT,
-     artist_name         VARCHAR,
-     duration            FLOAT,
-     num_songs           INTEGER,
-     song_id             VARCHAR,
-     title               VARCHAR,
-     year                INTEGER
+     artist_id        VARCHAR,
+     artist_latitude  FLOAT,
+     artist_location  VARCHAR,
+     artist_longitude FLOAT,
+     artist_name      VARCHAR,
+     duration         FLOAT,
+     num_songs        INTEGER,
+     song_id          VARCHAR,
+     title            VARCHAR,
+     year             INTEGER
  )
 """)
 
 songplay_table_create = ("""
+    CREATE TABLE songplay(
+    songplay_id INTEGER IDENTITY(0,1) PRIMARY KEY,
+    start_time  TIMESTAMP NOT NULL SORTKEY DISTKEY,
+    user_id     VARCHAR,
+    level       VARCHAR,
+    song_id     VARCHAR NOT NULL,
+    artist_id   VARCHAR NOT NULL,
+    session_id  INTEGER,
+    location    VARCHAR,
+    user_agent  VARCHAR
+    )
 """)
 
 user_table_create = ("""
@@ -89,6 +100,22 @@ staging_songs_copy = ("""
 # FINAL TABLES
 
 songplay_table_insert = ("""
+    INSERT INTO songplay (start_time,user_id,level,song_id,artist_id,session_id,location,user_agent)
+    SELECT distinct 
+    events.ts AS start_time,
+    events.userId as user_id,
+    events.level as level,
+    songs.song_id as song_id,
+    songs.artist_id as artist_id,
+    events.sessionId as session_id,
+    events.location as location,
+    events.userAgent as user_agent
+    from 
+    staging_events events 
+    JOIN
+    staging_songs songs
+    ON (events.song = songs.title AND events.artist = songs.artist_name)
+    AND events.page = 'NextSong'
 """)
 
 user_table_insert = ("""
@@ -105,9 +132,10 @@ time_table_insert = ("""
 
 # QUERY LISTS
 
-create_table_queries = [staging_events_table_create, staging_songs_table_create]
-drop_table_queries = [staging_events_table_drop, staging_songs_table_drop]
+create_table_queries = [staging_events_table_create, staging_songs_table_create,songplay_table_create]
+drop_table_queries = [staging_events_table_drop, staging_songs_table_drop, songplay_table_drop]
 copy_table_queries = [staging_events_copy, staging_songs_copy]
+insert_table_queries = [songplay_table_insert]
 
 #create_table_queries = [staging_events_table_create, staging_songs_table_create, songplay_table_create, user_table_create, song_table_create, artist_table_create, time_table_create]
 #drop_table_queries = [staging_events_table_drop, staging_songs_table_drop, songplay_table_drop, user_table_drop, song_table_drop, artist_table_drop, time_table_drop]
