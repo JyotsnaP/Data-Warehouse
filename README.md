@@ -259,3 +259,14 @@ select count(*) from time;
 <count>
 
 ```
+
+## Database schema
+___
+
+#### FACT TABLE
+
+
+| Tablename | Description | Fields |
+| ------ | ------- | ---------
+| songplays | records in event data associated with song plays i.e. records with page NextSong | <ul><li>songplay_id</li><li>start_time</li><li>user_id</li><li>level</li><li>song_id</li><li>artist_id</li><li>session_id</li><li>location</li><li>user_agent</li></ul>|
+
