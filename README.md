@@ -263,10 +263,28 @@ select count(*) from time;
 ## Database schema
 ___
 
-#### FACT TABLE
+#### `STAGING TABLES`
+| Tablename | Description | Fields |
+| ------ | ------- | --------- |
+|staging_events|staging data in redshift for events|<ul><li>artist</li><li>auth </li><li>firstName </li><li>gender </li><li>itemInSession  </li><li>lastName  </li><li>length </li><li>level</li><li>location  </li><li>method </li><li>page </li><li>registration</li><li>sessionId </li><li>song </li><li>status </li><li>ts</li><li>userAgent</li> <li>userId </li></ul>|
+|staging_songs|staging data in redshift for songs|<ul><li>artist_id </li><li>artist_latitude</li><li>artist_location</li><li>artist_longitude </li><li>artist_name </li><li>duration  </li><li>num_songs </li><li>song_id</li><li>title</li><li>year </li></ul>|
 
+
+
+#### `FACT TABLE`
+    
+| Tablename | Description | Fields |
+| ------ | ------- | --------- |
+| songplays | records in event data associated with song plays i.e. records with page NextSong | <ul><li>songplay_id</li><li>start_time</li><li>user_id</li><li>level</li><li>song_id</li><li>artist_id</li><li>session_id</li><li>location</li><li>user_agent</li></ul>|
+
+#### `DIMENSION TABLES`
 
 | Tablename | Description | Fields |
-| ------ | ------- | ---------
-| songplays | records in event data associated with song plays i.e. records with page NextSong | <ul><li>songplay_id</li><li>start_time</li><li>user_id</li><li>level</li><li>song_id</li><li>artist_id</li><li>session_id</li><li>location</li><li>user_agent</li></ul>|
+| ------ | ------- | --------- |
+| users | users in the app | <ul> <li>user_id</li><li>first_name</li><li>last_name</li><li>gender</li><li>level </ul> |
+|songs | songs in music database |  <ul> <li>song_id</li><li>title</li><li>artist_id</li><li>year</li><li>duration </ul>|
+| artists | artists in music database | <ul> <li>artist_id</li><li>name</li><li>location</li><li>lattitude</li><li>longitude </ul>|
+|time | timestamps of records in songplays broken down into specific units |  <ul> <li>start_time</li><li>hour</li><li>day</li><li>week</li><li>month</li><li>year</li><li>weekday </ul> |
+
+
 
