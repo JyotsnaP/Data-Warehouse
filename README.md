@@ -283,6 +283,7 @@ select * from users where user_id in (select distinct user_id from users group b
 select count(*) from song;
 <count>
 ```
+```
 select count(*) from artist;
 <count>
 ```
