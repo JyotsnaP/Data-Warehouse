@@ -239,22 +239,54 @@ ___
 ```
 select count(*) from staging_songs;
 24
-
+```
+```
 select count(*) from staging_events;
 16112
-
+```
+```
 select count(*) from songplay;
 <count>
-
+```
+```
 select count(*) from user;
-<count>
+105
+```
+```
+select distinct user_id from users;
+97
+```
+```
+select * from users where user_id in (select distinct user_id from users group by user_id having count(*) > 1)
+```
+`The users that have the level both paid and free`
 
+|user_id|first_name|last_name|level|
+|-------|----------|---------|-----|
+|16|Rylan|George|M|paid|
+|29|Jacqueline|Lynch|F|free|
+|49|Chloe|Cuevas|F|free|
+|80|Tegan|Levine|F|paid|
+|85|Kinsley|Young|F|paid|
+|15|Lily|Koch|F|paid|
+|15|Lily|Koch|F|free|
+|16|Rylan|George|M|free|
+|26|Ryan|Smith|M|free|
+|29|Jacqueline|Lynch|F|paid|
+|49|Chloe|Cuevas|F|paid|
+|80|Tegan|Levine|F|free|
+|85|Kinsley|Young|F|free|
+|88|Mohammad|Rodriguez|M|free|
+|88|Mohammad|Rodriguez|M|paid|
+
+```
 select count(*) from song;
 <count>
-
+```
 select count(*) from artist;
 <count>
-
+```
+```
 select count(*) from time;
 <count>
 
