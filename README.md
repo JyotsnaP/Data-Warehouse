@@ -230,35 +230,39 @@ ___
 - Add queries in sql_queries.py to copy staging/create/insert/ tables.
 
 
-#### Step 5: Run the etl
+#### Step 5: Run the etl (For the full dataset, this may take anywhere from 20-40 mins)
 -   ```
     python etl.py 
     ```
 
 #### Step 6: In the `query editor` section on the Redshift AWS console, choose public and verify: 
+
+Thefollowing are final counts of the number of rows in each table:
 ```
 select count(*) from staging_songs;
-24
+14896
 
 select count(*) from staging_events;
-16112
+8056
 
 select count(*) from songplay;
-<count>
+333
 
-select count(*) from user;
-<count>
+select count(*) from users;
+105
 
 select count(*) from song;
-<count>
+14896
 
 select count(*) from artist;
-<count>
+10025
 
 select count(*) from time;
-<count>
+333
 
 ```
+#### Step 7: When you are done, terminate the redshift-cluster
+
 
 ## Database schema
 ___
