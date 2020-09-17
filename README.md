@@ -209,6 +209,7 @@ ___
     - Database port: Enter 5439.
     - Master user name: Enter awsuser.
     - Master user password and Confirm password: Enter a password for the master user account.
+    - Node Type : dc2.large
 
 - On the Additional Configuration page, enter the following values:
     - VPC security groups: redshift_security_group
@@ -230,7 +231,7 @@ ___
 - Add queries in sql_queries.py to copy staging/create/insert/ tables.
 
 
-#### Step 5: Run the etl (For the full dataset, this may take anywhere from 20-40 mins)
+#### Step 5: Run the etl (For the full dataset, this can take anywhere from ~15-30 mins)
 -   ```
     python etl.py 
     ```
