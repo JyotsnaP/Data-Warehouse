@@ -4,13 +4,16 @@ from sql_queries import copy_table_queries
 from sql_queries import insert_table_queries
 
 
-
+# This method is used for loading staging tables 
+# using the copy command
 def load_staging_tables(cur, conn):
     for query in copy_table_queries:
         cur.execute(query)
         conn.commit()
 
 
+# This method is used to insert into fact and dimensional 
+# tables from the staging tables in redshift
 def insert_tables(cur, conn):
     for query in insert_table_queries:
         cur.execute(query)

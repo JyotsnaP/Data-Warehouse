@@ -3,12 +3,13 @@ import psycopg2
 from sql_queries import create_table_queries, drop_table_queries
 
 
+# The following method drops tables, if any.
 def drop_tables(cur, conn):
     for query in drop_table_queries:
         cur.execute(query)
         conn.commit()
 
-
+# The following method creates tables
 def create_tables(cur, conn):
     for query in create_table_queries:
         cur.execute(query)
