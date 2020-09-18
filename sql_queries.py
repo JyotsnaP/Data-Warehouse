@@ -15,7 +15,6 @@ artist_table_drop         = "DROP TABLE IF EXISTS artist;"
 time_table_drop           = "DROP TABLE IF EXISTS time;"
 
 # CREATE TABLES
-
 staging_events_table_create= ("""
     CREATE TABLE staging_events
     (
@@ -59,7 +58,7 @@ songplay_table_create = ("""
     CREATE TABLE songplay(
     songplay_id INTEGER IDENTITY(0,1) PRIMARY KEY,
     start_time  TIMESTAMP NOT NULL SORTKEY DISTKEY,
-    user_id     VARCHAR,
+    user_id     VARCHAR NOT NULL,
     level       VARCHAR,
     song_id     VARCHAR NOT NULL,
     artist_id   VARCHAR NOT NULL,
@@ -69,17 +68,14 @@ songplay_table_create = ("""
     )
 """)
 
-
-
 user_table_create = ("""
     CREATE TABLE users(
-    user_id    INTEGER NOT NULL SORTKEY PRIMARY KEY,
+    user_id    INTEGER NOT NULL PRIMARY KEY,
     first_name VARCHAR,
     last_name  VARCHAR,
     gender     VARCHAR,
     level      VARCHAR
     )
-    
 """)
 
 song_table_create = ("""
@@ -91,8 +87,6 @@ song_table_create = ("""
     duration   FLOAT
     )
 """)
-
-
 
 artist_table_create = ("""
     CREATE TABLE artist(
@@ -119,8 +113,6 @@ time_table_create = ("""
 """)
 
 # STAGING TABLES
-
-
 staging_events_copy = ("""
     copy staging_events from {data_bucket}
     credentials 'aws_iam_role={role_arn}'
@@ -135,7 +127,6 @@ staging_songs_copy = ("""
 """).format(data_bucket=config['S3']['SONG_DATA'],role_arn=config['IAM_ROLE']['ARN'])
 
 # FINAL TABLES
-
 songplay_table_insert = ("""
     INSERT INTO songplay (start_time,user_id,level,song_id,artist_id,session_id,location,user_agent)
     SELECT distinct 
@@ -151,7 +142,11 @@ songplay_table_insert = ("""
     staging_events events 
     JOIN
     staging_songs songs
-    ON (events.song = songs.title AND events.artist = songs.artist_name)
+    ON 
+    (events.song = songs.title AND events.artist = songs.artist_name
+    and
+    events.length = songs.duration
+    )
     AND events.page = 'NextSong'
 """)
     
@@ -165,6 +160,7 @@ user_table_insert = ("""
     level as level
     from staging_events
     where userId is NOT NULL
+    AND page  =  'NextSong';
 """)
 
 song_table_insert = ("""
@@ -203,8 +199,6 @@ time_table_insert = ("""
     EXTRACT(dayofweek FROM start_time) as weekday
     FROM songplay;
 """)
-
-
 
 # QUERY LISTS
 create_table_queries = [staging_events_table_create, staging_songs_table_create,songplay_table_create,user_table_create,song_table_create,artist_table_create,time_table_create]

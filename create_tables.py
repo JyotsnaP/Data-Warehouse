@@ -3,20 +3,29 @@ import psycopg2
 from sql_queries import create_table_queries, drop_table_queries
 
 
-# The following method drops tables, if any.
 def drop_tables(cur, conn):
+    """
+    The following method drops tables, if any.
+    """
     for query in drop_table_queries:
         cur.execute(query)
         conn.commit()
 
-# The following method creates tables
 def create_tables(cur, conn):
+    """
+    The following method creates tables
+    """
     for query in create_table_queries:
         cur.execute(query)
         conn.commit()
 
 
 def main():
+    """
+    This is the main method that calls two methods:
+    - drop_tables
+    - create_tables
+    """
     config = configparser.ConfigParser()
     config.read('dwh.cfg')
 
